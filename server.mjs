@@ -8,4 +8,4 @@ createServer((request, response) => {
   else if (path === '/api/inventory') { response.writeHead(200, { 'content-type': 'application/json' }); response.end(JSON.stringify(inventory)); }
   else if (path === '/') { response.writeHead(200, { 'content-type': 'text/html; charset=utf-8' }); response.end(html); }
   else { response.writeHead(404); response.end('Not found'); }
-}).listen(3000, '0.0.0.0', () => console.log('Inventory ready on port 3000'));
+}).listen(3000, '0.0.0.0');
