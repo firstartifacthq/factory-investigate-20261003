@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Fixture inventory</title>
+<style>body{font:16px system-ui;margin:0;background:#f4f5f7;color:#19212c}main{max-width:680px;margin:48px auto;padding:24px;background:white;border-radius:12px}h1{margin-top:0}form{display:flex;gap:12px;flex-wrap:wrap;align-items:center}input[type=search]{padding:10px;max-width:100%;box-sizing:border-box}button{padding:10px 18px}table{width:100%;border-collapse:collapse;margin-top:24px}td,th{text-align:left;padding:12px;border-bottom:1px solid #ddd}small{color:#596274}#summary{font-weight:600}@media(max-width:720px){main{margin:16px;padding:18px}}</style>
+<main><small>Software Factory test project</small><h1>Inventory</h1>
+<form><label>Search items <input type="search" name="search"></label><button>Search</button><label><input type="checkbox" name="low"> Low stock only</label></form>
+<p id="summary" role="status">Loading inventory…</p><table><thead><tr><th>Item</th><th>Units</th></tr></thead><tbody></tbody></table><p id="empty" hidden>No matching items.</p></main>
+<script type="module">
+const form = document.querySelector('form');
+const rows = await fetch('/api/inventory').then(response => { if (!response.ok) throw new Error('Inventory unavailable'); return response.json(); });
+function render() {
+ const query = form.elements.search.value.trim().toLowerCase();
+ const shown = rows.filter(item => item.name.toLowerCase().includes(query) && (!form.elements.low.checked || item.units <= 2));
+ document.querySelector('tbody').replaceChildren(...shown.map(item => { const tr=document.createElement('tr'); for(const value of [item.name,item.units]) {const td=document.createElement('td');td.textContent=String(value);tr.append(td);} return tr; }));
+ document.querySelector('#summary').textContent = `${shown.length} items · ${shown.reduce((sum,item)=>sum+item.units,0)} units`;
+ document.querySelector('#empty').hidden = shown.length !== 0;
+}
+form.addEventListener('submit', event => { event.preventDefault(); render(); });
+form.elements.low.addEventListener('change', render);
+render();
+</script></html>
