@@ -1,0 +1,4 @@
+version: 1
+extends:
+  - alint://bundled/hygiene/no-tracked-artifacts@v1
+  - alint://bundled/agent-hygiene@v1
