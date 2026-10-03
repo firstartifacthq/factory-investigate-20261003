@@ -6,6 +6,7 @@ export class InvestigationFixture {
   @func()
   async semgrep(@argument({ defaultPath: "/", ignore: [".git", ".devenv", "node_modules", ".dagger/sdk", ".dagger/node_modules"] }) source: Directory): Promise<string> {
     return dag.container().from(SEMGREP).withDirectory("/src", source).withWorkdir("/src")
+      .withExec(["semgrep", "--test", ".semgrep", "--metrics=off"])
       .withExec(["semgrep", "scan", "--config", ".semgrep", "--exclude", ".semgrep", "--metrics=off", "--error"]).stdout();
   }
   @func()
