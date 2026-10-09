@@ -27,6 +27,10 @@ export class InvestigationFixture {
   async qualification(@argument({ defaultPath: "/", ignore: [".git", ".devenv", "node_modules", ".dagger/sdk", ".dagger/node_modules"] }) source: Directory): Promise<string> {
     await Promise.all([this.semgrep(source), this.alint(source), this.lsLint(source)]);
     return dag.container().from(NODE).withDirectory("/workspace", source).withWorkdir("/workspace")
-      .withExec(["node", "--check", "server.mjs"]).withExec(["node", "--test", "inventory.test.mjs"]).stdout();
+      .withEnvVariable("NODE_ENV", "production")
+      .withExec(["node", "--check", "server.mjs"])
+      .withExec(["node", "--check", "inventory.mjs"])
+      .withExec(["npm", "test"])
+      .withExec(["node", ".dagger/smoke.mjs"]).stdout();
   }
 }
