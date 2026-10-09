@@ -11,7 +11,7 @@ function render() {
  const query = form.elements.search.value.trim().toLowerCase();
  const shown = rows.filter(item => item.name.toLowerCase().includes(query) && (!form.elements.low.checked || item.units <= 2));
  document.querySelector('tbody').replaceChildren(...shown.map(item => { const tr=document.createElement('tr'); for(const value of [item.name,item.units]) {const td=document.createElement('td');td.textContent=String(value);tr.append(td);} return tr; }));
- document.querySelector('#summary').textContent = `${shown.length} items · ${shown.reduce((sum,item)=>sum+item.units,0)} units`;
+ document.querySelector('#summary').textContent = `${shown.length} ${shown.length === 1 ? 'item' : 'items'} · ${shown.reduce((sum,item)=>sum+item.units,0)} units`;
  document.querySelector('#empty').hidden = shown.length !== 0;
 }
 form.addEventListener('submit', event => { event.preventDefault(); render(); });
